@@ -24,7 +24,8 @@ cfg = {
     'USER_LOADER': user_loader}
 
 app = web.Application()
-JWTLogin(app, cfg)
+ext = JWTLogin(cfg)
+ext.bind(app)
 
 token = app['jwtlogin'].encode({'login': 'user1',
                                 'password': 'password1',

@@ -1,0 +1,9 @@
+[report]
+omit =
+    .test/*
+    .setup.py
+    .venv/*
+include =
+    aiohttp_jwtlogin/*
+[html]
+directory=coverage_report

@@ -20,7 +20,7 @@ async def bad_jwt_default_handler(*args, **kwargs) -> aiohttp.web.Response:
 async def user_not_found_default_handler(*args, **kwargs) -> aiohttp.web.Response:
     """
     Default handler called when user loader returned NoneType object
-    :return: 401 response
+    :return: 403 response
     """
     return aiohttp.web.Response(text="Forbidden: user not found", status=403)
 
@@ -28,7 +28,7 @@ async def user_not_found_default_handler(*args, **kwargs) -> aiohttp.web.Respons
 async def jwt_expired_default_handler(*args, **kwargs) -> aiohttp.web.Response:
     """
     Default handler called when JWT expired
-    :return:
+    :return: 403 response
     """
     return aiohttp.web.Response(text="Forbidden: token expired", status=403)
 

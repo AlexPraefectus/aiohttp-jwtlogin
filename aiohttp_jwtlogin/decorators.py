@@ -11,15 +11,13 @@ def jwt_required(f):
     """
     @wraps(f)
     async def wrapper(*args, **kwargs):
-        # print('jwt-required')
         request = args[0]
         ext: JWTLogin = request.app['jwtlogin']
         auth_header = request.headers.get('authorization')
         if not auth_header:
             return await ext._no_header(*args, **kwargs)
         try:
-            # print(request.headers['authorization'])
-            request.token = ext.decode(request.headers['authorization'].split()[-1])
+            request.token = ext.decode(request.headers[ext.HEADER_NAME].split()[-1])
         except jwt.ExpiredSignatureError:
             return await ext._jwt_expired(*args, **kwargs)
         except jwt.InvalidTokenError:
@@ -28,7 +26,6 @@ def jwt_required(f):
     return wrapper
 
 
-# @jwt_required
 def user_required(f):
     """
     Loads user with provided user_loader callback
@@ -42,7 +39,6 @@ def user_required(f):
     """
     @wraps(f)
     async def wrapper(*args, **kwargs):
-        # print('user-required')
         request = args[0]
         ext: JWTLogin = request.app['jwtlogin']
         request.user = await ext.user_loader(request.token)
