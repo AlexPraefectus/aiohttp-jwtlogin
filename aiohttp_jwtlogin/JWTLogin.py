@@ -4,9 +4,9 @@ from .handlers import (bad_jwt_default_handler,
                        no_header_default_handler,
                        jwt_expired_default_handler)
 import inspect
-import warnings
 import datetime
 import jwt
+import logging
 
 
 class JWTLogin:
@@ -23,7 +23,7 @@ class JWTLogin:
         ("BAD_JWT_CALLBACK", "_bad_jwt"),
         ("NO_USER_CALLBACK", "_user_not_found"),
         ("JWT_EXPIRED_CALLBACK", "_jwt_expired"),
-        ("USER_LOADER", "_user_loader")
+        ("USER_LOADER", "user_loader")
     ]
 
     def encode(self, payload: dict, lifetime=None) -> bytes:
@@ -53,7 +53,7 @@ class JWTLogin:
         for callback, attr_name in JWTLogin._callbacks_lst:
             cb = config.get(callback)
             if not cb:
-                warnings.warn(f"{callback} not provided")
+                logging.warning(f"{callback} not provided")
             else:
                 if not inspect.iscoroutinefunction(cb):
                     raise ValueError(f"{callback} should be a coroutine")
@@ -61,9 +61,8 @@ class JWTLogin:
 
     def __init__(self, app: aiohttp.web.Application, config: dict):
         """
-        Binding extension on given application
-        extension class object available as app['jwtlogin'], there is no need to keep link manually
-        :param app: Application to bind extension on
+        Binding extension object to the application
+        :param app: application to bind extension on
         :param config:
             required keys:
                 AUTH_HEADER_NAME - header with JWT
@@ -75,6 +74,7 @@ class JWTLogin:
                 NO_HEADER_CALLBACK - coroutine called instead of request handler when no auth header provided
                 BAD_JWT_CALLBACK - coroutine called instead of request handler when JWT decoding returned an error
                 NO_USER_CALLBACK - coroutine called instead of request handler when user loader returned None
+                JWT_EXPIRED_CALLBACK - coroutine called instead of request handler when
                 USER_LOADER - coroutine callback to load user from jwt
                     signature: async def user_loader(jwt: dict) -> Optional[YourUserClass]
         """
@@ -84,5 +84,7 @@ class JWTLogin:
         self.JWT_SECRET_KEY = config['JWT_SECRET_KEY']
         self.JWT_DEFAULT_LIFETIME = config['JWT_DEFAULT_LIFETIME']
         self._set_callbacks(config)
+
+
 
 

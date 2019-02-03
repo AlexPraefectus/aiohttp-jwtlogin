@@ -30,15 +30,22 @@ token = app['jwtlogin'].encode({'login': 'user1',
                                 'password': 'password1',
                                 'iat': datetime.datetime.utcnow(),
                                 'exp': datetime.datetime.utcnow() +
-                                       datetime.timedelta(seconds=cfg['JWT_DEFAULT_LIFETIME'])})
+                                datetime.timedelta(seconds=cfg['JWT_DEFAULT_LIFETIME'])})
 
 
 @jwt_required
 async def i_need_jwt(request: web.Request):
-    return web.Response(text='Wow, I\'ve got a token')
+    return web.Response(text='Wow, I\'ve got a token' + str(request.token))
+
+
+@jwt_required
+@user_required
+async def i_need_user(request: web.Request):
+    return web.Response(text='Wow, I\'ve got a user' + str(request.user))
 
 
 app.router.add_get('/need-jwt/', i_need_jwt)
+app.router.add_get('/need-usr/', i_need_user)
 
 if __name__ == "__main__":
     web.run_app(app)

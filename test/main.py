@@ -28,6 +28,7 @@ class TestExtensionBinding(unittest.TestCase):
             'NO_HEADER_CALLBACK': async_handler,
             'BAD_JWT_CALLBACK': not_async_handler,
             'NO_USER_CALLBACK': async_handler,
+            'JWT_EXPIRED_CALLBACK': async_handler,
             'USER_LOADER': async_handler
         })
         self.correct_config = self.config_no_coroutine.copy()
