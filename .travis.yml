@@ -11,7 +11,7 @@ script:
   - python test.py
   - coverage run test.py
   - coverage report
-  - codecov -token=$CODECOV_TOKEN
+  - codecov
 
 deploy:
   provider: pypi
