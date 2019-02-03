@@ -9,6 +9,7 @@ install:
 
 script:
   - python test.py
+  - coverage test.py
   - codecov -token=$CODECOV_TOKEN
 
 deploy:
